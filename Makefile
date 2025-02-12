@@ -13,7 +13,6 @@ build-all:
 	docker buildx build \
 		-t open-sourdough-cam \
 		--platform linux/amd64,linux/arm \
-		--load \
 		.
 run:
 	docker run \
