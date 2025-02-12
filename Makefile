@@ -3,17 +3,15 @@ include .env
 export
 
 build:
-	uv pip freeze | grep -v "^-e" > requirements.txt && \
 	docker buildx build \
-	-t open-sourdough \
+	-t open-sourdough-cam \
 	--platform linux/amd64 \
 	--load \
 	.
 
 build-all:
-	uv pip freeze > requirements.txt && \
 	docker buildx build \
-	-t open-sourdough \
+	-t open-sourdough-cam \
 	--platform linux/amd64,linux/arm \
 	--load \
 	.
@@ -24,4 +22,4 @@ run:
 		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data \
 		-it \
 		--rm \
-		open-sourdough /bin/bash
+		open-sourdough-cam

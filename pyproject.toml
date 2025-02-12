@@ -1,5 +1,5 @@
 [project]
-name = "open-sourdough"
+name = "open-sourdough-cam"
 version = "0.1.0"
 description = ""
 authors = [{ name = "Andreas Borgstad", email = "aborgstad@gmail.com" }]

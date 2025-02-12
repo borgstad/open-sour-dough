@@ -6,7 +6,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from open_sourdough import log, settings
+from open_sourdough_cam import log, settings
 
 logger = log.logger
 
