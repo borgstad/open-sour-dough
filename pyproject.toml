@@ -1,25 +1,22 @@
-[tool.poetry]
-name = "open-sourdough"
+[project]
+name = "open-sourdough-cam"
 version = "0.1.0"
 description = ""
-authors = ["Andreas Borgstad <aborgstad@gmail.com>"]
+authors = [{ name = "Andreas Borgstad", email = "aborgstad@gmail.com" }]
+requires-python = "~=3.10"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-SQLAlchemy = "^2.0.4"
-opencv-python = "^4.7.0.72"
-numpy = "^1.24.2"
-setuptools = "^67.4.0"
-sqlalchemy-utils = "^0.40.0"
-psycopg2-binary = "^2.9.5"
-
-
-[tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
-isort = "^5.12.0"
+dependencies = [
+    "opencv-python>=4.7.0.72,<5",
+    "setuptools>=67.4.0,<68",
+    "loguru>=0.7.3",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
+[dependency-groups]
+dev = [
+    "black>=23.1.0,<24",
+    "isort>=5.12.0,<6",
+]

@@ -1,22 +1,26 @@
-FROM python:3.10
+FROM python:3.12
+RUN apt update && apt install curl ffmpeg libsm6 libxext6 -y
 
-RUN apt update && apt install ffmpeg libsm6 libxext6  -y
-ENV PYTHONFAULTHANDLER=1 \
-  PYTHONUNBUFFERED=1 \
-  PIP_DISABLE_PIP_VERSION_CHECK=on \
-  PIP_DEFAULT_TIMEOUT=100 \
-  POETRY_VERSION=1.3.2
+WORKDIR /app
 
-RUN pip install "poetry==$POETRY_VERSION"
+RUN curl --proto '=https' --tlsv1.2 -LsSf \
+    https://github.com/astral-sh/uv/releases/download/0.5.24/uv-installer.sh | sh
+ENV PATH="/root/.local/bin/:$PATH"
 
-RUN useradd -ms /bin/bash open-sourdough && \
-  usermod -a -G video open-sourdough
-USER open-sourdough
-WORKDIR /code
-COPY pyproject.toml /code/
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PYTHON=python3.12 \
+    UV_PROJECT_ENVIRONMENT=/app/.venv
 
-RUN poetry install
-COPY scripts scripts
-COPY open_sourdough_monitor open_sourdough_monitor
-ENV PYTHONPATH=/code
-ENTRYPOINT ["poetry", "run", "python", "scripts/run.py"]
+COPY uv.lock pyproject.toml README.md /app/
+COPY open_sourdough_cam /app/open_sourdough_cam
+
+RUN --mount=type=cache,target=/root/.cache \
+    uv sync \
+        --locked \
+        --no-dev \
+        --no-editable
+
+ENV PYTHONPATH=/app
+ENTRYPOINT [".venv/bin/python", "open_sourdough_cam/main.py"]
