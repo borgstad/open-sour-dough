@@ -3,21 +3,25 @@ include .env
 export
 
 build:
-	docker buildx create --use && \
+	uv pip freeze | grep -v "^-e" > requirements.txt && \
+	docker buildx build \
+	-t open-sourdough \
+	--platform linux/amd64 \
+	--load \
+	.
+
+build-all:
+	uv pip freeze > requirements.txt && \
 	docker buildx build \
 	-t open-sourdough \
 	--platform linux/amd64,linux/arm \
+	--load \
 	.
 run:
 	docker run \
-		-v /mnt/open-sourdough/images/:/data \
+		-v /data/:${PWD}/data \
 		--device=/dev/video0:/dev/video0 \
+		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data \
 		-it \
-		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=${OPEN_SOURDOUGH_ROOT_IMAGE_DIR} \
-		-e OPEN_SOURDOUGH_DB_HOST=${OPEN_SOURDOUGH_DB_HOST} \
-		-e OPEN_SOURDOUGH_DB_NAME=${OPEN_SOURDOUGH_DB_NAME} \
-		-e OPEN_SOURDOUGH_DB_USER=${OPEN_SOURDOUGH_DB_USER} \
-		-e OPEN_SOURDOUGH_DB_PASSWORD=${OPEN_SOURDOUGH_DB_PASSWORD} \
-		-e OPEN_SOURDOUGH_DB_PORT=${OPEN_SOURDOUGH_DB_PORT} \
 		--rm \
-		open-sourdough 
+		open-sourdough /bin/bash
