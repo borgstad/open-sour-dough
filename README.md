@@ -1,4 +1,4 @@
-# Open Sourdough
+# Open Sourdough Cam
 
 ![Open Sourdough Logo](path/to/logo.png) <!-- Optional: Add a logo image if available -->
 
