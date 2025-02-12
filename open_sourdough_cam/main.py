@@ -26,9 +26,8 @@ def start_session() -> None:
         img_location = settings.OPEN_SOURDOUGH_ROOT_IMAGE_DIR
         img_location.mkdir(exist_ok=True)
         img_name = str(int(time.time())) + ".jpg"
-
         save_picture_to_dir(img_location / img_name, image)
-        logger.info(f"took picture {img_name}")
+        logger.info(f"took picture {img_location / img_name}")
         time.sleep(settings.OPEN_SOURDOUGH_INTERVAL)
 
 
