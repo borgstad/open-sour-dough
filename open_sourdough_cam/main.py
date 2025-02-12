@@ -1,6 +1,4 @@
-import datetime
 import time
-from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -11,35 +9,50 @@ from open_sourdough_cam import log, settings
 logger = log.logger
 
 
-def start_session() -> None:
+def start_monitoring_session() -> None:
     """
-    Starts the sourdough monitoring session by taking pictures at regular intervals
-    until the session end time is reached.
+    Initiates the sourdough monitoring session by capturing images at defined intervals
+    until the session is manually terminated.
+
+    The function continuously captures images from the specified video source, saves them
+    to the designated directory, and logs the actions. It operates indefinitely until interrupted.
     """
     while True:
-        camera = cv2.VideoCapture(str(settings.OPEN_SOURDOUGH_VIDEO_DIR))
-        success, image = camera.read()
+        video_source = str(settings.OPEN_SOURDOUGH_VIDEO_DIR)
+        camera = cv2.VideoCapture(video_source)
+        success, frame = camera.read()
         camera.release()
-        if not success:
-            logger.error("failed to read image from camera")
 
-        img_location = settings.OPEN_SOURDOUGH_ROOT_IMAGE_DIR
-        img_location.mkdir(exist_ok=True)
-        img_name = str(int(time.time())) + ".jpg"
-        save_picture_to_dir(img_location / img_name, image)
-        logger.info(f"took picture {img_location / img_name}")
+        if not success:
+            logger.error("Failed to capture image from camera.")
+            time.sleep(settings.OPEN_SOURDOUGH_INTERVAL)
+            continue
+
+        image_dir = settings.OPEN_SOURDOUGH_ROOT_IMAGE_DIR
+        image_dir.mkdir(parents=True, exist_ok=True)
+
+        timestamp = int(time.time())
+        image_filename = f"{timestamp}.jpg"
+        image_path = image_dir / image_filename
+
+        save_image(image_path, frame)
+        logger.info(f"Captured image: {image_path}")
+
         time.sleep(settings.OPEN_SOURDOUGH_INTERVAL)
 
 
-def save_picture_to_dir(img_abs_path: Path, image: np.ndarray) -> None:
+def save_image(image_path: Path, image: np.ndarray) -> None:
     """
-    Saves a picture it to the designated directory.
+    Saves the provided image to the specified filesystem path.
 
-    :param image: The image to be saved.
+    Args:
+        image_path (Path): The absolute path where the image will be saved.
+        image (np.ndarray): The image data to be saved.
     """
-    # Image name is the unix timestamp
-    cv2.imwrite(str(img_abs_path), image)
+    success = cv2.imwrite(str(image_path), image)
+    if not success:
+        logger.error(f"Failed to save image to {image_path}")
 
 
 if __name__ == "__main__":
-    start_session()
+    start_monitoring_session()
