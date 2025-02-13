@@ -35,7 +35,7 @@ run-docker:
 		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data \
 		-it \
 		--rm \
-		ghcr.io/borgstad/open-sourdough
+		ghcr.io/borgstad/open-sourdough-cam
 
 mount-dir:
-	sshfs home:/projects/open-sourdough-cam /home/borg/projects/open-sourdough-cam/data/
+	sshfs -o allow_root home:/projects/open-sourdough-cam /home/borg/projects/open-sourdough-cam/data/
