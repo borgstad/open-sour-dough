@@ -21,7 +21,7 @@ build-arm:
 		.
 run:
 	docker run \
-		-v ${PWD}/data:/data \
+		-v $(CURDIR)/data:/data \
 		--device=/dev/video0:/dev/video0 \
 		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data \
 		-it \
@@ -30,7 +30,7 @@ run:
 
 run-docker:
 	docker run \
-		-v ${PWD}/data:/data \
+		-v $(CURDIR)/data:/data \
 		--device=/dev/video0:/dev/video0 \
 		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data \
 		-it \
