@@ -32,10 +32,11 @@ run-docker:
 	docker run \
 		-v $(CURDIR)/data:/data \
 		--device=/dev/video0:/dev/video0 \
-		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data \
+		-e OPEN_SOURDOUGH_ROOT_IMAGE_DIR=/data/$(shell date +%Y-%m-%d)/pics-$(shell mktemp -u XXXXXX) \
 		-it \
 		--rm \
+		--detach \
 		ghcr.io/borgstad/open-sourdough-cam
 
 mount-dir:
-	sshfs -o allow_root home:/projects/open-sourdough-cam /home/borg/projects/open-sourdough-cam/data/
+	nohup sshfs -o allow_root home:/projects/open-sourdough-cam /home/borg/projects/open-sourdough-cam/data
